@@ -12,6 +12,7 @@ A professional web application designed to help fitness enthusiasts discover, fi
 **IronTrack** is a high-performance exercise discovery tool built for athletes and trainers. The application fetches data from a library of over 3,000 exercises to provide users with detailed instructions, equipment needs, and difficulty ratings. The goal is to provide a seamless interface for users to build their workout routines based on specific physiological targets.
 
 🎯 Project Purpose
+
 The primary objective of this project is to demonstrate advanced JavaScript techniques, specifically:
 - **Asynchronous Programming:** Handling real-time data fetching from a third-party REST API.
 - **Data Manipulation:** Using Higher-Order Functions (HOFs) to manage complex data sets.
