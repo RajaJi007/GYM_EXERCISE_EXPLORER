@@ -8,6 +8,7 @@ A professional web application designed to help fitness enthusiasts discover, fi
 
 ---
  📖 Project Overview
+ 
 **IronTrack** is a high-performance exercise discovery tool built for athletes and trainers. The application fetches data from a library of over 3,000 exercises to provide users with detailed instructions, equipment needs, and difficulty ratings. The goal is to provide a seamless interface for users to build their workout routines based on specific physiological targets.
 
 🎯 Project Purpose
