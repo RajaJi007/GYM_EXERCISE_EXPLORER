@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IronTrack — Exercise Explorer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="11" width="4" height="6" rx="1.5" fill="currentColor" />
+            <rect x="5" y="9" width="3" height="10" rx="1.5" fill="currentColor" />
+            <rect x="8" y="12" width="12" height="4" rx="1" fill="currentColor" />
+            <rect x="20" y="9" width="3" height="10" rx="1.5" fill="currentColor" />
+            <rect x="23" y="11" width="4" height="6" rx="1.5" fill="currentColor" />
+          </svg>
+        </span>
+        <div>
+          <h1 class="brand-name">IRON<span class="accent">TRACK</span></h1>
+          <p class="brand-tagline">Exercise Explorer</p>
+        </div>
+      </div>
+
+      <div class="header-meta">
+        <span class="status-dot" id="statusDot" aria-label="API status"></span>
+        <span class="status-label" id="statusLabel">Ready</span>
+      </div>
+    </div>
+  </header>
+  <section class="controls-section">
+    <div class="controls-inner">
+
+      <div class="hero-text">
+        <p class="hero-eyebrow">Milestone 2 — API Integration</p>
+        <h2 class="hero-heading">Find Your <span class="accent">Perfect</span> Exercise</h2>
+      </div>
+      <div class="filter-bar" role="search" aria-label="Exercise filters">
+
+        <div class="filter-group">
+          <label class="filter-label" for="muscleFilter">Muscle Group</label>
+          <select id="muscleFilter" class="filter-select">
+            <option value="">All Muscles</option>
+            <option value="biceps">Biceps</option>
+            <option value="triceps">Triceps</option>
+            <option value="chest">Chest</option>
+            <option value="back">Back</option>
+            <option value="shoulders">Shoulders</option>
+            <option value="abdominals">Abdominals</option>
+            <option value="quadriceps">Quadriceps</option>
+            <option value="hamstrings">Hamstrings</option>
+            <option value="glutes">Glutes</option>
+            <option value="calves">Calves</option>
+            <option value="forearms">Forearms</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="difficultyFilter">Difficulty</label>
+          <select id="difficultyFilter" class="filter-select">
+            <option value="">All Levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="expert">Expert</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="typeFilter">Type</label>
+          <select id="typeFilter" class="filter-select">
+            <option value="">All Types</option>
+            <option value="strength">Strength</option>
+            <option value="cardio">Cardio</option>
+            <option value="stretching">Stretching</option>
+            <option value="powerlifting">Powerlifting</option>
+            <option value="plyometrics">Plyometrics</option>
+            <option value="olympic_weightlifting">Olympic Weightlifting</option>
+          </select>
+        </div>
+
+        <button class="fetch-btn" id="fetchBtn" aria-label="Fetch exercises">
+          <span class="btn-text">Fetch Exercises</span>
+          <span class="btn-icon" aria-hidden="true">→</span>
+        </button>
+
+      </div>
+    </div>
+  </section>
+  <main class="main-content" id="mainContent" aria-label="Exercise results">
+    <div class="loading-state hidden" id="loadingState" role="status" aria-live="polite">
+      <div class="loader-ring" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <p class="loading-text">Fetching exercises<span
+          class="loading-dots"><span>.</span><span>.</span><span>.</span></span></p>
+    </div>
+    <div class="error-state hidden" id="errorState" role="alert">
+      <span class="error-icon" aria-hidden="true">⚠</span>
+      <p class="error-title">Failed to fetch exercises</p>
+      <p class="error-msg" id="errorMsg">Please check your API key and try again.</p>
+      <button class="retry-btn" id="retryBtn">Retry</button>
+    </div>
+    <div class="prompt-state" id="promptState">
+      <div class="prompt-graphic" aria-hidden="true">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="26" width="10" height="12" rx="3" fill="currentColor" opacity="0.5" />
+          <rect x="14" y="22" width="7" height="20" rx="3" fill="currentColor" opacity="0.7" />
+          <rect x="21" y="28" width="22" height="8" rx="2" fill="currentColor" />
+          <rect x="43" y="22" width="7" height="20" rx="3" fill="currentColor" opacity="0.7" />
+          <rect x="50" y="26" width="10" height="12" rx="3" fill="currentColor" opacity="0.5" />
+        </svg>
+      </div>
+      <p class="prompt-title">Set your filters &amp; hit <span class="accent">Fetch</span></p>
+      <p class="prompt-sub">Pulls live data from the API-Ninjas Exercises API</p>
+    </div>
+    <div class="results-header hidden" id="resultsHeader">
+      <p class="results-count" id="resultsCount">0 exercises</p>
+      <button class="sort-btn" id="sortBtn" aria-label="Sort exercises">Sort A–Z</button>
+    </div>
+    <div class="exercise-grid" id="exerciseGrid" role="list" aria-label="Exercise results"></div>
+
+  </main>
+  <footer class="site-footer">
+    <p>IronTrack · Web Application Programming · Milestone 2 · Powered by <a href="https://api-ninjas.com/"
+        target="_blank" rel="noopener">API-Ninjas</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
