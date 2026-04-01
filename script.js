@@ -1,4 +1,4 @@
-const apiKey = 'YOUR_ACTUAL_API_KEY_HERE';
+const apiKey = CCBJD23xJBcF0Ozq8jX7yZ6wigQ1ABPGqPWXy2MZ;
 const container = document.getElementById('exercise-container');
 const loadingIndicator = document.getElementById('loading');
 
