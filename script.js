@@ -20,6 +20,8 @@ const DOM = {
   exerciseGrid: document.getElementById("exerciseGrid"),
   statusDot: document.getElementById("statusDot"),
   statusLabel: document.getElementById("statusLabel"),
+  searchInput: document.getElementById("searchInput"),
+  favoritesList: document.getElementById("favoritesList"),
 };
 
 let appState = {
@@ -65,6 +67,13 @@ async function fetchExercises(filters) {
  * @param {'ready' | 'loading' | 'active' | 'error'} state
  * @param {string} label
  */
+function handleSearch() {
+  const searchTerm = DOM.searchInput.value.toLowerCase();
+  const filtered = appState.exercises.filter(ex => 
+    ex.name.toLowerCase().includes(searchTerm)
+  );
+  renderGrid(filtered);
+}
 function setStatus(state, label) {
   DOM.statusDot.className = `status-dot ${state}`;
   DOM.statusLabel.textContent = label;
@@ -156,20 +165,24 @@ function renderExerciseCard(exercise, index) {
   `;
 }
 
-/**
- * @param {Array} exercises
- */
-function renderGrid(exercises) {
-  const cardsHTML = exercises
-    .map((exercise, index) => renderExerciseCard(exercise, index))
-    .join("");
-
-  DOM.exerciseGrid.innerHTML = cardsHTML;
-
-  const cardCount = exercises.length;
-  DOM.resultsCount.textContent = `${cardCount} exercise${cardCount !== 1 ? "s" : ""} found`;
+function renderExerciseCard(ex, index) {
+  return `
+    <div class="exercise-card" style="animation-delay: ${index * 0.05}s">
+      <div class="card-header">
+        <span class="badge ${ex.difficulty}">${ex.difficulty}</span>
+        <button class="fav-btn" onclick="toggleFavorite('${ex.name.replace(/'/g, "\\'")}')" title="Save to Favorite">
+          ★
+        </button>
+      </div>
+      <h3 class="card-title">${capitalize(ex.name)}</h3>
+      <div class="card-meta">
+        <span><strong>Muscle:</strong> ${capitalize(ex.muscle)}</span>
+        <span><strong>Type:</strong> ${capitalize(ex.type)}</span>
+      </div>
+      <p class="card-instr">${ex.instructions}</p>
+    </div>
+  `;
 }
-
 /**
  * @param {string} message
  */
@@ -234,6 +247,27 @@ function handleSort() {
   renderGrid(sorted);
 }
 
+function toggleFavorite(name) {
+  let favorites = JSON.parse(localStorage.getItem("favExercises")) || [];
+  if (favorites.includes(name)) {
+    favorites = favorites.filter(f => f !== name);
+  } else {
+    favorites.push(name);
+  }
+  localStorage.setItem("favExercises", JSON.stringify(favorites));
+  alert(`${name} updated in favorites!`);
+}
+function toggleFavorite(name) {
+  let favorites = JSON.parse(localStorage.getItem("favExercises")) || [];
+  if (favorites.includes(name)) {
+    favorites = favorites.filter(f => f !== name);
+    alert(`${capitalize(name)} removed from favorites!`);
+  } else {
+    favorites.push(name);
+    alert(`${capitalize(name)} saved to favorites!`);
+  }
+  localStorage.setItem("favExercises", JSON.stringify(favorites));
+}
 /**
  * @param {string} str
  * @returns {string}
@@ -248,6 +282,7 @@ function capitalize(str) {
 DOM.fetchBtn.addEventListener("click", handleFetch);
 DOM.retryBtn.addEventListener("click", handleFetch);
 DOM.sortBtn.addEventListener("click", handleSort);
+DOM.searchInput.addEventListener("input", handleSearch);
 
 [DOM.muscleFilter, DOM.difficultyFilter, DOM.typeFilter].forEach(select => {
   select.addEventListener("keydown", (e) => {
