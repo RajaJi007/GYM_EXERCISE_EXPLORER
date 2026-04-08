@@ -165,23 +165,16 @@ function renderExerciseCard(exercise, index) {
   `;
 }
 
-function renderExerciseCard(ex, index) {
-  return `
-    <div class="exercise-card" style="animation-delay: ${index * 0.05}s">
-      <div class="card-header">
-        <span class="badge ${ex.difficulty}">${ex.difficulty}</span>
-        <button class="fav-btn" onclick="toggleFavorite('${ex.name.replace(/'/g, "\\'")}')" title="Save to Favorite">
-          ★
-        </button>
-      </div>
-      <h3 class="card-title">${capitalize(ex.name)}</h3>
-      <div class="card-meta">
-        <span><strong>Muscle:</strong> ${capitalize(ex.muscle)}</span>
-        <span><strong>Type:</strong> ${capitalize(ex.type)}</span>
-      </div>
-      <p class="card-instr">${ex.instructions}</p>
-    </div>
-  `;
+/**
+ * @param {Array} exercises
+ */
+function renderGrid(exercises) {
+  const cardsHTML = exercises
+    .map((exercise, index) => renderExerciseCard(exercise, index))
+    .join("");
+  DOM.exerciseGrid.innerHTML = cardsHTML;
+  const cardCount = exercises.length;
+  DOM.resultsCount.textContent = `${cardCount} exercise${cardCount !== 1 ? "s" : ""} found`;
 }
 /**
  * @param {string} message
