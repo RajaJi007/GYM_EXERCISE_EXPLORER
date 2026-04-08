@@ -42,9 +42,12 @@
     <div class="controls-inner">
 
       <div class="hero-text">
-        <p class="hero-eyebrow">Milestone 2 — API Integration</p>
+        <p class="hero-eyebrow">Milestone 3 — Core Features</p>
         <h2 class="hero-heading">Find Your <span class="accent">Perfect</span> Exercise</h2>
       </div>
+      <div class="search-group">
+  <input type="text" id="searchInput" placeholder="Search exercises (e.g. Deadlift)..." aria-label="Search exercises">
+</div>
       <div class="filter-bar" role="search" aria-label="Exercise filters">
 
         <div class="filter-group">
@@ -131,10 +134,13 @@
 
   </main>
   <footer class="site-footer">
-    <p>IronTrack · Web Application Programming · Milestone 2 · Powered by <a href="https://api-ninjas.com/"
+    <p>IronTrack · Web Application Programming · Milestone 3 · Powered by <a href="https://api-ninjas.com/"
         target="_blank" rel="noopener">API-Ninjas</a></p>
   </footer>
-
+  <div id="favoritesSection" class="favorites-container hidden">
+  <h2>Your Favorites</h2>
+  <div id="favoritesList"></div>
+</div>
   <script src="script.js"></script>
 </body>
 
