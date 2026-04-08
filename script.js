@@ -1,9 +1,9 @@
-
 const CONFIG = {
   API_BASE_URL: "https://api.api-ninjas.com/v1/exercises",
   API_KEY: "CCBJD23xJBcF0Ozq8jX7yZ6wigQ1ABPGqPWXy2MZ",
   DEFAULT_LIMIT: 15,
 };
+
 const DOM = {
   muscleFilter: document.getElementById("muscleFilter"),
   difficultyFilter: document.getElementById("difficultyFilter"),
@@ -28,60 +28,26 @@ let appState = {
   exercises: [],
   sortAscending: true,
 };
-/**
-@param {Object} params 
-@returns {string}
- */
-function buildQueryString(params) {
-  const queryParts = Object.entries(params)
-    .filter(([, value]) => value !== "")
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
 
-  return queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+function capitalize(str) {
+  return str.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
-/**
- * @param {Object} filters
- * @returns {Promise<Array>}
- */
-async function fetchExercises(filters) {
-  const queryString = buildQueryString(filters);
-  const url = `${CONFIG.API_BASE_URL}${queryString}`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "X-Api-Key": CONFIG.API_KEY,
-    },
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`API Error ${response.status}: ${errorBody || response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data;
+function createDifficultyBadge(difficulty) {
+  const level = difficulty?.toLowerCase() || "unknown";
+  return `<span class="badge badge-diff" data-level="${level}">${capitalize(level)}</span>`;
 }
-/**
- * @param {'ready' | 'loading' | 'active' | 'error'} state
- * @param {string} label
- */
-function handleSearch() {
-  const searchTerm = DOM.searchInput.value.toLowerCase();
-  const filtered = appState.exercises.filter(ex => 
-    ex.name.toLowerCase().includes(searchTerm)
-  );
-  renderGrid(filtered);
+
+function createTypeBadge(type) {
+  const label = type?.replace(/_/g, " ") || "—";
+  return `<span class="badge badge-type">${capitalize(label)}</span>`;
 }
+
 function setStatus(state, label) {
   DOM.statusDot.className = `status-dot ${state}`;
   DOM.statusLabel.textContent = label;
 }
 
-/**
- * @param {'loading' | 'error' | 'prompt' | 'results'} panel
- */
 function showPanel(panel) {
   const panels = [
     { key: "loading", el: DOM.loadingState },
@@ -90,35 +56,21 @@ function showPanel(panel) {
     { key: "results", el: DOM.resultsHeader },
     { key: "results", el: DOM.exerciseGrid },
   ];
-
-  panels.forEach(({ key, el }) => {
-    el.classList.toggle("hidden", key !== panel);
-  });
+  panels.forEach(({ key, el }) => el.classList.toggle("hidden", key !== panel));
 }
 
-/**
- * @param {string} difficulty
- * @returns {string}
- */
-function createDifficultyBadge(difficulty) {
-  const level = difficulty?.toLowerCase() || "unknown";
-  return `<span class="badge badge-diff" data-level="${level}">${capitalize(level)}</span>`;
+function toggleFavorite(name) {
+  let favorites = JSON.parse(localStorage.getItem("favExercises")) || [];
+  if (favorites.includes(name)) {
+    favorites = favorites.filter(f => f !== name);
+    alert(`${capitalize(name)} removed from favorites!`);
+  } else {
+    favorites.push(name);
+    alert(`${capitalize(name)} saved to favorites!`);
+  }
+  localStorage.setItem("favExercises", JSON.stringify(favorites));
 }
 
-/**
- * @param {string} type
- * @returns {string}
- */
-function createTypeBadge(type) {
-  const label = type?.replace(/_/g, " ") || "—";
-  return `<span class="badge badge-type">${capitalize(label)}</span>`;
-}
-
-/**
- * @param {Object} exercise
- * @param {number} index
- * @returns {string}
- */
 function renderExerciseCard(exercise, index) {
   const {
     name = "Unknown Exercise",
@@ -135,17 +87,15 @@ function renderExerciseCard(exercise, index) {
   return `
     <article class="exercise-card" role="listitem" tabindex="0" aria-label="${name}">
       <span class="card-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
-
       <div class="card-header">
         <h3 class="card-name">${name}</h3>
         <div class="card-badges">
           ${createTypeBadge(type)}
           ${createDifficultyBadge(difficulty)}
         </div>
+        <button class="fav-btn" onclick="toggleFavorite('${name.replace(/'/g, "\\'")}')" title="Save to Favorite">★</button>
       </div>
-
       <div class="card-divider" aria-hidden="true"></div>
-
       <div class="card-body">
         <div class="card-row">
           <span class="card-row-label">Muscle</span>
@@ -157,48 +107,48 @@ function renderExerciseCard(exercise, index) {
         </div>
         <p class="card-instructions">${instructions}</p>
       </div>
-
       <div class="card-footer">
         <span class="equipment-tag">${equipmentIcon} ${equipmentLabel}</span>
       </div>
-    </article>
-  `;
+    </article>`;
 }
 
-/**
- * @param {Array} exercises
- */
 function renderGrid(exercises) {
-  const cardsHTML = exercises
-    .map((exercise, index) => renderExerciseCard(exercise, index))
-    .join("");
+  const cardsHTML = exercises.map((exercise, index) => renderExerciseCard(exercise, index)).join("");
   DOM.exerciseGrid.innerHTML = cardsHTML;
   const cardCount = exercises.length;
   DOM.resultsCount.textContent = `${cardCount} exercise${cardCount !== 1 ? "s" : ""} found`;
 }
-/**
- * @param {string} message
- */
+
 function renderError(message) {
   DOM.errorMsg.textContent = message;
   showPanel("error");
   setStatus("error", "Error");
 }
 
-/**
- * @param {Array}   exercises
- * @param {boolean} ascending
- * @returns {Array}
- */
 function sortExercises(exercises, ascending) {
   return [...exercises].sort((a, b) => {
     const nameA = (a.name || "").toLowerCase();
     const nameB = (b.name || "").toLowerCase();
-    return ascending
-      ? nameA.localeCompare(nameB)
-      : nameB.localeCompare(nameA);
+    return ascending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
   });
 }
+
+async function fetchExercises(filters) {
+  const queryParts = Object.entries(filters)
+    .filter(([, value]) => value !== "")
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+  const queryString = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+
+  const response = await fetch(`${CONFIG.API_BASE_URL}${queryString}`, {
+    method: "GET",
+    headers: { "X-Api-Key": CONFIG.API_KEY },
+  });
+
+  if (!response.ok) throw new Error(`API Error ${response.status}`);
+  return await response.json();
+}
+
 async function handleFetch() {
   const filters = {
     muscle: DOM.muscleFilter.value,
@@ -216,60 +166,29 @@ async function handleFetch() {
     DOM.sortBtn.textContent = "Sort A–Z";
 
     if (appState.exercises.length === 0) {
-      renderError("No exercises found for the selected filters. Try a different combination.");
+      renderError("No exercises found for the selected filters.");
       return;
     }
-    const sortedExercises = sortExercises(appState.exercises, appState.sortAscending);
-    renderGrid(sortedExercises);
+    renderGrid(sortExercises(appState.exercises, true));
     showPanel("results");
     setStatus("active", `${appState.exercises.length} loaded`);
-
   } catch (error) {
-    console.error("[IronTrack] Fetch failed:", error);
-    renderError(error.message || "An unexpected error occurred. Please try again.");
-
+    renderError(error.message || "An unexpected error occurred.");
   } finally {
     DOM.fetchBtn.disabled = false;
   }
 }
+
+function handleSearch() {
+  const searchTerm = DOM.searchInput.value.toLowerCase();
+  const filtered = appState.exercises.filter(ex => ex.name.toLowerCase().includes(searchTerm));
+  renderGrid(filtered);
+}
+
 function handleSort() {
   appState.sortAscending = !appState.sortAscending;
   DOM.sortBtn.textContent = appState.sortAscending ? "Sort A–Z" : "Sort Z–A";
-
-  const sorted = sortExercises(appState.exercises, appState.sortAscending);
-  renderGrid(sorted);
-}
-
-function toggleFavorite(name) {
-  let favorites = JSON.parse(localStorage.getItem("favExercises")) || [];
-  if (favorites.includes(name)) {
-    favorites = favorites.filter(f => f !== name);
-  } else {
-    favorites.push(name);
-  }
-  localStorage.setItem("favExercises", JSON.stringify(favorites));
-  alert(`${name} updated in favorites!`);
-}
-function toggleFavorite(name) {
-  let favorites = JSON.parse(localStorage.getItem("favExercises")) || [];
-  if (favorites.includes(name)) {
-    favorites = favorites.filter(f => f !== name);
-    alert(`${capitalize(name)} removed from favorites!`);
-  } else {
-    favorites.push(name);
-    alert(`${capitalize(name)} saved to favorites!`);
-  }
-  localStorage.setItem("favExercises", JSON.stringify(favorites));
-}
-/**
- * @param {string} str
- * @returns {string}
- */
-function capitalize(str) {
-  return str
-    .split(" ")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  renderGrid(sortExercises(appState.exercises, appState.sortAscending));
 }
 
 DOM.fetchBtn.addEventListener("click", handleFetch);
@@ -278,12 +197,8 @@ DOM.sortBtn.addEventListener("click", handleSort);
 DOM.searchInput.addEventListener("input", handleSearch);
 
 [DOM.muscleFilter, DOM.difficultyFilter, DOM.typeFilter].forEach(select => {
-  select.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleFetch();
-  });
+  select.addEventListener("keydown", (e) => { if (e.key === "Enter") handleFetch(); });
 });
 
 setStatus("ready", "Ready");
 showPanel("prompt");
-
-console.log("%c[IronTrack] Script loaded. Ready to fetch exercises.", "color: #e8ff47; font-weight: bold;");
