@@ -1,55 +1,59 @@
-# GYM_EXERCISE_EXPLORER
-A dynamic exercise discovery web app built with JS and Fetch API, featuring real-time data filtering, searching, and sorting of 3,000+ workouts.
-
-
 # 🏋️‍♂️ IronTrack: Dynamic Exercise Explorer
 
-A professional web application designed to help fitness enthusiasts discover, filter, and organize workouts using real-time data from the Exercises API.
-
----
- 📖 Project Overview
- 
-**IronTrack** is a high-performance exercise discovery tool built for athletes and trainers. The application fetches data from a library of over 3,000 exercises to provide users with detailed instructions, equipment needs, and difficulty ratings. The goal is to provide a seamless interface for users to build their workout routines based on specific physiological targets.
-
-🎯 Project Purpose
-
-The primary objective of this project is to demonstrate advanced JavaScript techniques, specifically:
-- **Asynchronous Programming:** Handling real-time data fetching from a third-party REST API.
-- **Data Manipulation:** Using Higher-Order Functions (HOFs) to manage complex data sets.
-- **Responsive Design:** Creating a mobile-first UI for gym-floor accessibility.
+A high-performance web application designed for athletes and trainers to discover, filter, and organize workouts using real-time data from the Exercises API.
 
 ---
 
-🛠 Tech Stack
-- **Frontend:** HTML5, CSS3 (Custom Flexbox/Grid Layouts)
-- **Scripting:** JavaScript ES6+ (Fetch API, Promises)
+## 📖 Project Overview
+**IronTrack** is a functional exercise discovery tool that fetches data from a library of over 3,000 exercises. It provides users with detailed instructions, equipment requirements, and difficulty ratings through a seamless, industrial-themed interface.
+
+### 🎯 Project Goals Achieved
+- **Asynchronous Integration:** Successfully implemented real-time data fetching using the Fetch API with secure header authentication.
+- **State Management:** Managed application state (sorting and filtered data) without page reloads.
+- **DOM Manipulation:** Developed a dynamic UI that updates instantly based on user input.
+
+---
+
+## 🛠 Tech Stack
+- **Frontend:** HTML5, CSS3 (Custom Flexbox & CSS Grid)
+- **Scripting:** JavaScript ES6+ (Async/Await, Fetch API)
 - **Data Source:** [API-Ninjas Exercises API](https://api-ninjas.com/api/exercises)
-- **Version Control:** Git & GitHub
+- **Persistence:** Browser LocalStorage for favorites.
 
 ---
 
-🚀 Key Features (Planned)
-- **Global Search:** Instant search functionality to find exercises by name (e.g., "Deadlift", "Bench Press").
-- **Smart Filtering:** Multi-select filters to narrow down results by:
-  - **Muscle Group:** (e.g., Chest, Back, Quads, Biceps)
-  - **Difficulty Level:** (Beginner, Intermediate, Expert)
-  - **Equipment:** (Dumbbell, Barbell, Bodyweight)
-- **Dynamic Sorting:** Results can be toggled alphabetically (A-Z) or categorized by exercise type.
-- **Detail View:** Interactive cards that expand to show step-by-step performance instructions.
+## 🚀 Core Features (Milestone 4 Final)
+
+### 🔍 Real-Time Global Search
+Implemented a dynamic search bar that utilizes the `.filter()` HOF to match exercise names instantly as the user types, providing a "live results" experience.
+
+### 🛠 Multi-Criteria Smart Filtering
+Users can narrow down workouts using three distinct parameters:
+- **Muscle Group:** (e.g., Chest, Back, Quads, Biceps)
+- **Difficulty Level:** (Beginner, Intermediate, Expert)
+- **Exercise Type:** (e.g., Strength, Cardio, Stretching)
+
+### ↕️ Advanced Sorting
+A toggle-based sorting system using the `.sort()` and `.localeCompare()` methods allows users to organize results alphabetically (A-Z and Z-A).
+
+### ⭐ Favorites Library
+Integrated **LocalStorage** persistence. Users can click the "★" icon on any exercise card to save it. These selections remain saved even after the browser is refreshed.
 
 ---
 
-🧪 Implementation Logic
-To meet the academic requirements of this project, I will be implementing the following JavaScript Array Methods:
-1. **`.filter()`**: To handle muscle-group and difficulty selections.
-2. **`.sort()`**: To organize the exercise list alphabetically.
-3. **`.forEach()` / `.map()`**: To dynamically render the exercise cards into the DOM.
+## 🧪 Implementation Logic
+To comply with the academic requirements, this project strictly avoids traditional `for` and `while` loops, utilizing only **Higher-Order Functions**:
+
+1. **`.map()`**: Used to transform API objects into styled HTML card components.
+2. **`.filter()`**: Powering both the category selectors and the global search bar.
+3. **`.sort()`**: Handles the alphabetical reordering of the exercise state.
+4. **`.forEach()`**: Used for bulk event listener attachment and managing UI panel visibility.
 
 ---
 
-📂 Project Structure
+## 📂 Final Project Structure
 ```text
-├── index.html         # Main UI Structure
-├── style.css          # Custom styling and layout
-├── script.js         # API integration and HOF logic
-└── README.md          # Project documentation
+├── index.html         # Semantic HTML5 structure and UI containers
+├── style.css          # Industrial-gym dark theme & responsive breakpoints
+├── script.js          # Modular JS: State management, API logic, and HOFs
+└── README.md          # Final project documentation
